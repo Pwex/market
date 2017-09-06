@@ -1,0 +1,23 @@
+/* Add here all your CSS customizations */
+.product-details-box .product-actions .actions-right .addtowishlist, .product-details-box .product-actions .actions-right .comparelink {
+    border-radius: 2px;
+}
+.filter-checkbox {
+    -webkit-transform: translateY(-50%);
+    border-radius: 2px;
+    border: 1px solid #706c68;
+    display: inline-block;
+    height: 18px;
+    line-height: 1;
+    margin-right: 5px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+}
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
+    top: 9px;
+}
+.filter-name {
+	margin-left: 5px;
+}
