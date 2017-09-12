@@ -51,18 +51,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] 		= 'shop/index';
 
-$route['auth']						= 'AuthUser/index';
-$route['account']					= 'AuthUser/create_account';
-$route['access/denied'] 			= 'AuthUser/index';
-$route['exit'] 						= 'AuthUser/sess_destroy';
-$route['exit_session_other_device'] = 'AuthUser/exit_session_other_device';
-$route['reset-key'] 				= 'AuthUser/validate_reset_key';
-$route['reset-key/invalid-email'] 	= 'AuthUser/reset_key';
-$route['reset-key/confirm-email'] 	= 'AuthUser/reset_key';
-$route['restore-key/(:any)/(:num)'] = 'AuthUser/restore_key_validate/$1/$2';
-$route['restore-key'] 				= 'AuthUser/restore_key_validate';
-$route['confirmation-restore'] 		= 'AuthUser/confirmation_restore';
-$route['validation/access'] 		= 'AuthUser/validate_access';
+$route['auth']							= 'AuthUser/index';
+$route['auth-create-account-success'] 	= 'AuthUser/auth_create_account_success';
+$route['account']						= 'AuthUser/create_account';
+$route['account-create-success'] 		= 'AuthUser/account_create_success';
+$route['confirm-create-account/(:num)/(:any)']	= 'AuthUser/confirm_create_account/$1/$2';
+$route['error-confirm-create-account'] 	= 'AuthUser/error_confirm_create_account';
+$route['access/denied'] 				= 'AuthUser/index';
+$route['exit'] 							= 'AuthUser/sess_destroy';
+$route['reset-key'] 					= 'AuthUser/validate_reset_key';
+$route['reset-key/invalid-email'] 		= 'AuthUser/reset_key';
+$route['reset-key/confirm-email'] 		= 'AuthUser/reset_key';
+$route['restore-key/(:any)/(:num)'] 	= 'AuthUser/restore_key_validate/$1/$2';
+$route['restore-key'] 					= 'AuthUser/restore_key_validate';
+$route['confirmation-restore'] 			= 'AuthUser/confirmation_restore';
+$route['validation/access'] 			= 'AuthUser/validate_access';
 
 # Shop
 $route['product/(:num)/(:any)']  = 'shop/product/$1/$2';
@@ -77,5 +80,7 @@ $route['contact'] 	  = 'shop/contact';
 # Dashboard
 $route['dashboard']   = 'dashboard/index';
 
-$route['404_override'] 			= '';
-$route['translate_uri_dashes'] 	= FALSE;
+$route['error-show-404'] 			 = 'Errors/show_404';
+$route['error-session-other-device'] = 'Errors/session_other_device';
+$route['404_override'] 				 = '';
+$route['translate_uri_dashes'] 		 = FALSE;

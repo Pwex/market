@@ -145,7 +145,7 @@
         <!-- Current Page Vendor and Views -->
         <script src="<?php echo base_url('assets/js/views/view.contact.js') ?>"></script>
         
-        <?php if ($this->uri->segment(1) != 'blog' and $this->uri->segment(1) != 'contact' and $this->uri->segment(1) != 'product' and $this->uri->segment(1) != 'shopping-cart' and $this->uri->segment(1) != 'checkout'): ?>   
+        <?php if ($this->uri->segment(1) == '' or $this->uri->segment(1) == 'search'): ?>   
             <script src="<?php echo base_url('assets/vendor/nouislider/nouislider.min.js') ?>"></script>
         <?php endif ?>
         

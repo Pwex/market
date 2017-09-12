@@ -1,3 +1,13 @@
+<style type="text/css">
+    .name-user {
+        background-color: #7aa93c;
+        color: #fff;
+        display: block;
+        font-size: small;
+        font-weight: lighter;
+        padding: 5px 14px;
+    }
+</style>
 <!--Contenido --> 
 <div role="main" class="main">
     <!-- Menu de seccion -->
@@ -13,17 +23,17 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h1>Administración consumidor</h1>
+                    <h1>Administración</h1>
                 </div>
             </div>
         </div>
     </section>
     <!-- Menu de seccion END -->
     <!-- Contenido de los productos -->
-    <div class="container" style="margin-top: 3.5em">
+    <div class="container" style="margin-top: 2.5em">
         <div class="row">
             <div class="col-md-9 col-md-push-3 my-account">
-                <h1 class="h2 heading-primary font-weight-normal">My Dashboard</h1>
+                <h1 class="h2 heading-primary font-weight-normal">Mi Escritorio</h1>
                 <div class="alert alert-success success-msg mb-xl" role="alert">
                     Thank you for registering with Porto - Premium Template.
                 </div>
@@ -89,20 +99,29 @@
             </div>
             <div class="col-md-3 col-md-pull-9">
                 <aside class="sidebar">
-                    <h4>My Account</h4>
+                    <h4><i class="fa fa-user"></i> Mi cuenta</h4>
+                    <?php if (validation_session_open() == true): ?>
+                        <?php echo "<span class='name-user'>".$this->session->userdata['user']['name'].' '.$this->session->userdata['user']['last_name']."</span>"; ?>
+                    <?php endif ?></span>
                     <ul class="nav nav-list">
-                        <li class="active"><a href="#">Account Dashboard</a></li>
-                        <li><a href="#">Account Information</a></li>
-                        <li><a href="#">Address Book</a></li>
-                        <li><a href="#">My Orders</a></li>
-                        <li><a href="#">Billing Agreements</a></li>
-                        <li><a href="#">Recurring Profiles</a></li>
-                        <li><a href="#">My Product Reviews</a></li>
-                        <li><a href="#">My Tags</a></li>
-                        <li><a href="#">My Wishlist</a></li>
-                        <li><a href="#">My Applications</a></li>
-                        <li><a href="#">Newsletter Subscriptions</a></li>
-                        <li><a href="#">My Downloadable Products</a></li>
+                        <li>
+                            <a href="#">Mi Perfil</a>
+                        </li>
+                        <li>
+                            <a href="#">Mediciones</a>
+                        </li>
+                        <li>
+                            <a href="#">Mi Programas</a>
+                        </li>
+                        <li>
+                            <a href="#">Pedidos</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url('') ?>">Market Wellness</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url('exit') ?>">Cerrar sesión</a>
+                        </li>
                     </ul>
                 </aside>
             </div>

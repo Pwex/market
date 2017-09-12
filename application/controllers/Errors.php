@@ -1,13 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends CI_Controller {
+class Errors extends CI_Controller {
 
 	public function __construct()
     {
         parent::__construct();
-        $this->load->library(array('managerauth'));
-        $this->managerauth->validate_session();
     }
 
     public function output_template($page)
@@ -25,9 +23,16 @@ class Dashboard extends CI_Controller {
 		$this->load->view('template/footer');
     }
 
-	public function index()
+	# Pagina de error 404
+	public function show_404()
 	{
-		$this->output_template('dashboard/home');
+		$this->output_template('errors/show_404');
+	}
+
+	# Pagina de error, inicio de sesion con otro dispositivos simultaneamente
+	public function session_other_device()
+	{
+		$this->output_template('errors/session_other_device');
 	}
 
 }

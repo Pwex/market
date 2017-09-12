@@ -22,12 +22,12 @@ class Managerauth {
     	
     	# Validar que existe una sesion abierta
     	if (empty($this->CI->session->userdata('agent')) or is_null($this->CI->session->userdata('agent'))) {
-    		show_404();
+    		redirect('error-show-404');
     	}
     }
 
     # Validacion de acceso de usuarios
-    public function validation($data)
+    public function validation($data, $ip)
     {
     	# Carga del modelo y librerias
     	$this->CI->load->model('AuthUserModel', 'auth', TRUE);
@@ -38,15 +38,15 @@ class Managerauth {
 				break;
 				case 1:
 					# Verificar si no existe una sesion abierta previamente Y si existe cancelamos el paso y se envia una notificacion al usuario
-			    	if ($this->CI->auth->validate_session_other_device($data['email']) == FALSE) {
+			    	if ($this->CI->auth->validate_session_other_device($data['email'], $ip) == FALSE) {
 			    		# Cargar Libreria Manager Auth | User Agent
 						$this->CI->load->library('session');
 						# Eliminar sesion
 						$this->CI->session->sess_destroy();
 						# Enviar notificacion de error al usuario
-						$this->CI->auth->send_error_access_other_user($data['email'], 'error_access_other_user', $this->CI->input->ip_address());
+						$this->CI->auth->send_error_access_other_user($data['email'], $this->CI->input->ip_address());
 						# Redireccionar al login
-						redirect('exit_session_other_device');
+						redirect('error-session-other-device');
 			    	}
 					# Librerias
 					$this->CI->load->library(array('user_agent'));
@@ -72,20 +72,19 @@ class Managerauth {
 						$data_user = $this->CI->auth->search_id_user($data['email']);
 						$app['user'] = array(
 							'ip'			=> $this->CI->input->ip_address(),
-							'id_user'		=> $data_user[0]['id_user'],
+							'id_client'		=> $data_user[0]['id_client'],
 							'name'			=> $data_user[0]['name'],
 							'last_name'		=> $data_user[0]['last_name'],
 							'email'			=> $data_user[0]['email'],
-							'country'		=> $data_user[0]['country'],
-							'type_of_access'=> $data_user[0]['type_of_access']
+							'country'		=> $data_user[0]['country']
 						);
 						# Geolocalización del usuario
 						$app['geolocation'] = $this->geolocation();
 						# Cambiar el estutus del usuario
-						$this->CI->auth->change_status_session_user($app['user']['id_user'], $app['user']['ip'], TRUE);
+						$this->CI->auth->change_status_session_user($app['user']['id_client'], $app['user']['ip'], TRUE);
 						# Seguimiento de inicio de sesion de usuarios
 						$log = array(
-							'user_log' 			=> $app['user']['id_user'],
+							'user_log' 			=> $app['user']['id_client'],
 							'ip_device' 		=> $app['user']['ip'],
 							'browser' 			=> $app['agent']['browser'],
 							'platform' 			=> $app['agent']['platform'],
@@ -96,6 +95,9 @@ class Managerauth {
 						);
 						$app['user']['log'] = $this->CI->auth->log_entry($log);
 						return $app;
+				break;
+				case 2:
+					redirect('error-confirm-create-account');
 				break;
 			}
     }

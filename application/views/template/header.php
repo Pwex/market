@@ -82,11 +82,21 @@
                             <div class="top-menu-area">
                                 <a href="#">Opciones <i class="fa fa-caret-down"></i></a>
                                 <ul class="top-menu">
-                                    <li><a href="<?php echo base_url('dashboard') ?>">Mi cuenta</a></li>
                                     <li><a href="#">Oferta diaria</a></li>
                                     <li><a href="#">Mi lista de deseos</a></li>
                                     <li><a href="<?php echo base_url('blog') ?>">Blog</a></li>
-                                    <li><a href="<?php echo base_url('auth') ?>">Iniciar sesión</a></li>
+                                    <?php if (validation_session_open() == true): ?>
+                                        <li>
+                                            <a href="<?php echo base_url('dashboard') ?>">Mi cuenta</a>
+                                        </li>
+                                    <?php endif ?>
+                                    <li>
+                                        <?php if (validation_session_open() == false): ?>
+                                            <a href="<?php echo base_url('auth') ?>">Iniciar sesión</a>
+                                        <?php else: ?>
+                                            <a href="<?php echo base_url('exit') ?>">Cerrar sesión</a>
+                                        <?php endif ?>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -101,7 +111,7 @@
                                             <div class="header-search-wrapper">
                                                 <input type="text" class="form-control" name="q" id="q" placeholder="Buscar...">
                                                 <select id="cat" name="cat" required="">
-                                                    <option>Todas las Categorías</option>
+                                                    <option>Categorías</option>
                                                     <?php foreach ($category as $key => $value): ?>
                                                         <option value="<?php echo $value['id_category'] ?>"><?php echo $value['name_category'] ?></option>
                                                     <?php endforeach ?>

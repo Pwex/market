@@ -24,7 +24,54 @@ class AuthUser extends CI_Controller {
 		$this->load->view('template/footer');
 	}
 
+	# Plantilla para crear el usuario
+	public function output_template_create_account()
+	{
+		# Carga del modelo y librerias
+		$this->load->model('ShopModel', 'layout', TRUE);
+		$this->load->helper('form');
+		# Información de la tienda
+		$data['information_shop'] = $this->layout->information_shop();
+		# Listado de categorías
+		$data['category'] = $this->layout->all_list_category();
+		# Listado de paises
+		$data['country'] = $this->layout->all_list_country();
+		# Listado de ciudades
+		$data['cities'] = $this->layout->all_list_cities();
+		# Renderizando la vista | plantilla
+		$this->load->view('template/header', $data);
+		$this->load->view('account');
+		$this->load->view('template/footer');
+	}
+
 	public function create_account()
+	{
+		switch ($this->input->post()) {
+			case false:
+				$this->output_template_create_account();
+			break;
+			case true:
+				$this->rules_insert();
+				switch ($this->form_validation->run()) {
+					case false:
+						$this->output_template_create_account();
+					break;
+					case true:
+						$data = $this->input->post();
+						if (!isset($data['subscribe_to_newsletter'])) {
+							$data['subscribe_to_newsletter'] = 0;
+						}
+						$this->load->model('AuthUserModel', 'auth', TRUE);
+						$this->auth->save_account($data);
+						redirect('account-create-success');
+					break;
+				}
+			break;
+		}
+	}
+
+	# Vista de confirmacion de creacion de la cuenta de usuario
+	public function account_create_success()
 	{
 		# Carga del modelo y librerias
 		$this->load->model('ShopModel', 'layout', TRUE);
@@ -35,8 +82,165 @@ class AuthUser extends CI_Controller {
 		$data['category'] = $this->layout->all_list_category();
 		# Renderizando la vista | plantilla
 		$this->load->view('template/header', $data);
-		$this->load->view('account');
+		$this->load->view('account_create_success');
 		$this->load->view('template/footer');
+	}
+
+	# Confirmacion de la cuenta de acceso
+	public function confirm_create_account($id = NULL, $key = NULL)
+	{
+		if (empty($id) or empty($key)) {
+			return redirect('error-show-404');
+		}
+
+		$this->load->model('AuthUserModel', 'auth', TRUE);
+		if (!$this->auth->validate_url_confirm_account($id, $key)) {
+			return redirect('error-show-404');	
+		} 
+
+		return redirect('auth-create-account-success');
+
+	}
+
+	# Mensaje de confirmacion, la cuenta a sido creada
+	public function auth_create_account_success()
+	{
+		# Carga del modelo y librerias
+		$this->load->model('ShopModel', 'layout', TRUE);
+		$this->load->helper('form');
+		# Información de la tienda
+		$data['information_shop'] = $this->layout->information_shop();
+		# Listado de categorías
+		$data['category'] = $this->layout->all_list_category();
+		# Renderizando la vista | plantilla
+		$this->load->view('template/header', $data);
+		$this->load->view('auth_create_account_success');
+		$this->load->view('template/footer');
+	}
+
+	# Mensaje de error, no ha confirmado la cuenta de acceso
+	public function error_confirm_create_account()
+	{
+		# Carga del modelo y librerias
+		$this->load->model('ShopModel', 'layout', TRUE);
+		$this->load->helper('form');
+		# Información de la tienda
+		$data['information_shop'] = $this->layout->information_shop();
+		# Listado de categorías
+		$data['category'] = $this->layout->all_list_category();
+		# Renderizando la vista | plantilla
+		$this->load->view('template/header', $data);
+		$this->load->view('errors/error_confirm_create_account');
+		$this->load->view('template/footer');
+	}
+
+	# Relas de validacion de registro de usuarios
+	public function rules_insert()
+	{
+		$config = array(
+			array(
+				'field' => 'name',
+				'label' => 'primer nombre',
+				'rules' => 'required|max_length[80]|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario ingresar el %s',
+								'max_length'=> 'La longitud maxima a ingresar es de 80 caracteres'
+						   )
+			),
+			array(
+				'field' => 'second_name',
+				'label' => 'segundo nombre',
+				'rules' => 'max_length[80]|trim',
+				'errors' => array(
+								'max_length'=> 'La longitud maxima a ingresar es de 80 caracteres'
+						   )
+			),
+			array(
+				'field' => 'last_name',
+				'label' => 'apellidos',
+				'rules' => 'required|max_length[80]|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario ingresar el %s',
+								'max_length'=> 'La longitud maxima a ingresar es de 80 caracteres'
+						   )
+			),
+			array(
+				'field' => 'email',
+				'label' => 'correo electrónico',
+				'rules' => 'required|max_length[120]|valid_email|is_unique[ec_client.email]|trim',
+				'errors' => array(
+								'required' 	  => 'Es necesario ingresar el %s',
+								'max_length'  => 'La longitud maxima a ingresar es de 120 caracteres',
+								'valid_email' => 'Correo electrónico invalido',
+								'is_unique'	  => 'El correo electrónico ingresado ya esta registrado, por favor intente de nuevo'
+						   )
+			),
+			array(
+				'field' => 'phone',
+				'label' => 'teléfono',
+				'rules' => 'required|max_length[20]|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario ingresar el %s',
+								'max_length'=> 'La longitud maxima a ingresar es de 20 caracteres'
+						   )
+			),
+			array(
+				'field' => 'movil',
+				'label' => 'movil',
+				'rules' => 'required|max_length[20]|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario ingresar el %s',
+								'max_length'=> 'La longitud maxima a ingresar es de 20 caracteres'
+						   )
+			),
+			array(
+				'field' => 'address',
+				'label' => 'dirección',
+				'rules' => 'required|max_length[255]|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario ingresar una %s',
+								'max_length'=> 'La longitud maxima a ingresar es de 255 caracteres'
+						   )
+			),
+			array(
+				'field' => 'password',
+				'label' => 'contraseña',
+				'rules' => 'required|max_length[30]|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario ingresar una %s',
+								'max_length'=> 'La longitud maxima a ingresar es de 30 caracteres'
+						   )
+			),
+			array(
+				'field' => 'confirm_password',
+				'label' => 'confirmar contraseña',
+				'rules' => 'required|max_length[30]|matches[password]|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario ingresar una %s',
+								'max_length'=> 'La longitud maxima a ingresar es de 30 caracteres',
+								'matches'   => 'Las contraseñas ingresadas son distintas'
+						   )
+			),
+			array(
+				'field' => 'country',
+				'label' => 'país',
+				'rules' => 'required|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario seleccionar un %s'
+						   )
+			),
+			array(
+				'field' => 'cities',
+				'label' => 'ciudad',
+				'rules' => 'required|trim',
+				'errors' => array(
+								'required' 	=> 'Es necesario seleccionar una %s'
+						   )
+			)
+		);
+		$this->load->library('form_validation');
+		$this->form_validation->set_error_delimiters('<p class="text-danger msg-error">', '</p>');
+		$this->form_validation->set_rules($config);
 	}
 
 	# Restablecer clave de acceso
@@ -164,9 +368,9 @@ class AuthUser extends CI_Controller {
 					$this->load->library(array('managerauth', 'session'));
 				# Validacion del acceso al sistema y carga de la sesion de usuario
 					# Creacion de la sesión de usuario
-					$this->session->set_userdata($this->managerauth->validation($this->input->post()));
+					$this->session->set_userdata($this->managerauth->validation($this->input->post(), $this->input->ip_address()));
 					# Redireccionar a la pagina de dashboard
-					redirect('escritorio');
+					redirect('dashboard');
 			break;
 			# Ingreso de forma insegura, ataque por url
 			case FALSE:
@@ -182,19 +386,13 @@ class AuthUser extends CI_Controller {
 		$this->load->model('AuthUserModel', 'auth', TRUE);
 		$this->load->library('session');
 		# Cambiar el estutus del usuario
-		$this->auth->change_status_session_user($this->session->userdata['user']['id_user'], NULL, FALSE);
+		$this->auth->change_status_session_user($this->session->userdata['user']['id_client'], NULL, FALSE);
 		# Cerrar el seguimiento del usuario
 		$this->auth->log_exit($this->session->userdata['user']['log']);
 		# Eliminar sesion
 		$this->session->sess_destroy();
 		# Redireccionar al login
 		redirect();
-	}
-
-	# Mostrar mensaje de error al usuario que trata de iniciar sesion simultaneamente cuando existe una sesion abierta
-	public function exit_session_other_device()
-	{
-		$this->load->view('app_errors/exit_session_other_device');
 	}
 
 	# Reglas de validación | Formulario de recuperación de clave de acceso
